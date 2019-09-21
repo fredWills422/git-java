@@ -16,11 +16,11 @@ public class TemperatureConverterApp {
 			System.out.print("Enter degrees in Fahrenheit: ");
 			
 			double degreesInFahrenheit = sc.nextDouble();
-			double degreesInCelcius = ((degreesInFahrenheit - 32) * 5/9);
+			double degreesInCelcsius = ((degreesInFahrenheit - 32) * 5/9);
 			DecimalFormat df = new DecimalFormat("#.##");
-			degreesInCelcius = Double.valueOf(df.format(degreesInCelcius));
+			degreesInCelcsius = Double.valueOf(df.format(degreesInCelcsius));
 
-			System.out.println("Degrees in celcius: " + degreesInCelcius + "\n");
+			System.out.println("Degrees in Celcsius: " + degreesInCelcsius + "\n");
 			
 			System.out.print("Continue? (y/n): ");
 			choice = sc.next();
