@@ -35,29 +35,6 @@ public class Console {
         return i;
     }
     
-    public static int hasIntInRange(int min, int max) {
-        int i = 0;
-        boolean isValid = false;
-        while (!isValid) {
-            if (i < min) {
-                System.out.println(
-                        "Error! Number must be greater than or equal to " + min + ".");
-                i = 0;
-                break;
-            } else if (i > max) {
-                System.out.println(
-                        "Error! Number must be less than or equal to " + max + ".");
-                i = 0;
-                break;
-            } else {
-                isValid = true;
-                
-            }
-        }
-        return i;
-    }
-
-    
     public static int getIntInRange(String prompt, int min, int max) {
         int i = 0;
         boolean isValid = false;
