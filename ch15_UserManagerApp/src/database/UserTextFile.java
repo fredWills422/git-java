@@ -23,8 +23,6 @@ public class UserTextFile implements DAO<User> {
 		users = this.getAll();
 	}
 	
-	
-
 	@Override
 	public User get(String id) {
 		for(User u: users) {
@@ -35,47 +33,82 @@ public class UserTextFile implements DAO<User> {
 		return null;
 	}
 
+	private boolean saveAll() {
+		try(PrintWriter out = new PrintWriter(
+						  new BufferedWriter(
+						  new FileWriter(usersFile)))) {
+			for(User u: users) {
+				out.print(u.getId()+ TAB);
+				out.print(u.getUserName()+TAB);
+				out.print(u.getPassword()+TAB);
+				out.print(u.getFirstName()+TAB);
+				out.print(u.getLastName()+TAB);
+				out.print(u.getPhoneNumber()+TAB);
+				out.print(u.getEmail()+TAB);
+				out.print(u.isReviewer()+TAB);
+				out.println(u.isAdmin()+TAB);
+			}
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	@Override
 	public List<User> getAll() {
 		if(users != null) {
 			return users;
 		}
-		
 		users = new ArrayList<>();
-		
 		if(Files.exists(usersPath)) {
-			
-			try {
-				BufferedReader in = new BufferedReader(
-									new FileReader(usersFile));
-				
+			try (BufferedReader in = new BufferedReader(
+									 new FileReader(usersFile))){
 				String line= in.readLine();
-				
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				while (line!= null) {
+					String[] fields = line.split(TAB);
+					String id = fields[0];
+					String userName = fields[1];
+					String password = fields[2];
+					String firstName = fields[3];
+					String lastName = fields[4];
+					String phoneNumber = fields[5];
+					String email = fields[6];
+					String isReviewer = fields[7];
+					String isAdmin = fields[8];
+					User u = new User(id, userName, password, firstName, lastName, phoneNumber, email, Boolean.parseBoolean(isReviewer), Boolean.parseBoolean(isAdmin));
+					users.add(u);
+					line = in.readLine();
+				}
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
-			
+		}else {
+			System.out.println(usersPath.toAbsolutePath()+ "doesn't exist.");
+			return null;
 		}
+		return users;
+	}
+
+	@Override
+	public boolean add(User u) {
+		users.add(u);
+		return this.saveAll();
+	}
+
+	@Override
+	public boolean update(User newUser) {
+		User oldUser = this.get(newUser.getId());
+		int i = users.indexOf(oldUser);
+		users.remove(i);
 		
-		
-		return null;
+		users.add(i,newUser);
+		return this.saveAll();
 	}
 
 	@Override
-	public boolean add(User t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean update(User t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean delete(User t) {
-		// TODO Auto-generated method stub
+	public boolean delete(User u) {
+		users.remove(u);
 		return false;
 	}
 
