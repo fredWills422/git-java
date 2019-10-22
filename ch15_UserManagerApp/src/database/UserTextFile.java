@@ -15,10 +15,10 @@ public class UserTextFile implements DAO<User> {
 	private Path usersPath = null;
 	private File usersFile = null;
 	private final String TAB= "\t";
-	private final String USERS_URI = "c:/bootcamp/java/fileiodemo/users.txt";
+	private final String USER_URI = "c:/bootcamp/java/fileiodemo/users.txt";
 	
 	public UserTextFile() {
-		usersPath = Paths.get(USERS_URI);
+		usersPath = Paths.get(USER_URI);
 		usersFile = usersPath.toFile();
 		users = this.getAll();
 	}
@@ -46,7 +46,7 @@ public class UserTextFile implements DAO<User> {
 				out.print(u.getPhoneNumber()+TAB);
 				out.print(u.getEmail()+TAB);
 				out.print(u.isReviewer()+TAB);
-				out.println(u.isAdmin()+TAB);
+				out.println(u.isAdmin());
 			}
 			return true;
 		} catch (IOException e) {
@@ -84,7 +84,7 @@ public class UserTextFile implements DAO<User> {
 				e1.printStackTrace();
 			}
 		}else {
-			System.out.println(usersPath.toAbsolutePath()+ "doesn't exist.");
+			System.out.println(usersPath.toAbsolutePath()+ " doesn't exist.");
 			return null;
 		}
 		return users;

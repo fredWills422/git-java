@@ -87,7 +87,7 @@ public class Console {
         return d;
     }
     
-    public static boolean getBoolean(String prompt) {
+    public static Boolean getBoolean(String prompt) {
         boolean b = false;
         boolean isValid = false;
         while (!isValid) {

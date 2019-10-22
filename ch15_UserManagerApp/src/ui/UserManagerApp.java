@@ -49,7 +49,7 @@ public class UserManagerApp {
 		System.out.println("COMMAND MENU");
 		System.out.println("list    - List all users");
 		System.out.println("add    - Add a user");
-		System.out.println("del    - Delete a user");
+		System.out.println("delete    - Delete a user");
 		System.out.println("help    - Show this menu");
 		System.out.println("exit    - Exit this application");
 	}
@@ -69,7 +69,7 @@ public class UserManagerApp {
 			sb.append(u.getPhoneNumber()+ "\t");
 			sb.append(u.getEmail()+ "\t");
 			sb.append(u.isReviewer()+ "\t");
-			sb.append(u.isAdmin()+ "\t");
+			sb.append(u.isAdmin()+ "\n");
 		}
 		System.out.println(sb);
 	}
