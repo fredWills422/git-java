@@ -23,16 +23,16 @@ private Connection getConnection() throws SQLException{
 		//statement instead of prepared statement
 		Statement stmt = getConnection().createStatement();
 		String sql = "SELECT * FROM Vendor";
-		List<Vendor> users = new ArrayList<>();
+		List<Vendor> vendors = new ArrayList<>();
 		ResultSet rs = stmt.executeQuery(sql);
 		while(rs.next()) {
 			//parse user row into user pojo
 			Vendor v = createVendorFromResultSet(rs);
-			users.add(v);
+			vendors.add(v);
 			
 		}
 		rs.close();
-		return users;
+		return vendors;
 	}
 
 	

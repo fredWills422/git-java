@@ -3,8 +3,10 @@ package ui;
 import java.sql.SQLException;
 import java.util.List;
 
+import business.Product;
 import business.User;
 import business.Vendor;
+import db.ProductDB;
 import db.UserDB;
 import db.VendorDB;
 import util.Console;
@@ -12,6 +14,7 @@ import util.Console;
 public class PRSConsoleApp {
 	static UserDB udb = new UserDB();
 	static VendorDB vdb = new VendorDB();
+	static ProductDB pdb = new ProductDB();
 
 	public static void main(String[] args) {
 		
@@ -121,9 +124,9 @@ public class PRSConsoleApp {
 				break;
 			case 7:
 				//get
-				int vendorId = Console.getInt("Vendor ID:");
+				int vid = Console.getInt("Vendor ID:");
 				try {
-					Vendor v = vdb.get(vendorId);
+					Vendor v = vdb.get(vid);
 					System.out.println("Vendor retrieved: ");
 					System.out.println(v);
 				} catch (SQLException e) {
@@ -152,7 +155,7 @@ public class PRSConsoleApp {
 				//update
 				//1- get id of the user we want to update
 				System.out.println("Get a vendor");
-				int vid = Console.getInt("Vendor Id:");
+				vid = Console.getInt("Vendor Id:");
 				//2- get the user for the id entered
 				v =getVendor(vid);
 				if(v==null) {
@@ -191,6 +194,87 @@ public class PRSConsoleApp {
 				}
 				break;
 				
+			case 11:
+				//list
+				try {
+					List<Product> products = pdb.list();
+					System.out.println("List of products: ");
+					for (Product p: products) {
+						System.out.println(p);
+					}
+				} catch (SQLException e) {
+					
+					e.printStackTrace();
+				}
+				break;
+			case 12:
+				//get
+				id = Console.getInt("Product ID:");
+				try {
+					Product p = pdb.get(id);
+					System.out.println("Product retrieved: ");
+					System.out.println(p);
+				} catch (SQLException e) {
+					
+					e.printStackTrace();
+				}
+				break;
+			case 13:
+				//add 
+				System.out.println("Add a product");
+				int vendorId = Console.getInt("Vendor Id? ");
+				String partNumber = Console.getString("Part number? ");
+				String name = Console.getString("Name? ");
+				double price = Console.getDouble("Price? ");
+				String unit = Console.getString("Unit? ");
+				String photoPath = Console.getString("Photo path? ");
+				Product p = new Product(vendorId, partNumber, name, price, unit, photoPath);
+				rowCount = 0;
+				rowCount = pdb.addProduct(p);
+				System.out.println("User add, " +rowCount+ " rows affected.");
+				break;
+			case 14:
+				//update
+				//1- get id of the product we want to update
+				System.out.println("Get a product");
+				id = Console.getInt("Product Id:");
+				//2- get the product for the id entered
+				p =getProduct(id);
+				if(p==null) {
+					//3- does the product exist? if not, error
+					System.out.println("No product found for id: "+ id);
+				}else {
+					//4- if product exists, prompt for new price
+					double pNewPrice= Console.getDouble("New product price? ");
+					//5- update the price in product, update
+					p.setPrice(pNewPrice);
+					rowCount = pdb.updateProduct(p);
+					if (rowCount==1) {
+						System.out.println("Product updated.");
+					}else {
+						System.out.println("Error updating product.");
+					}
+				}
+				break;
+			case 15:
+				//delete
+				//1- get id of the product we want to delete
+				System.out.println("Get a product");
+				id = Console.getInt("Product Id:");
+				//2- get the product for the id entered
+				p =getProduct(id);
+				if(p==null) {
+					//3- does the product exist? if not, error
+					System.out.println("No product found for id: "+ id);
+				}else {
+					rowCount = pdb.deleteProduct(p);
+					if (rowCount==1) {
+						System.out.println("Product deleted.");
+					}else {
+						System.out.println("Error deleting product.");
+					}
+				}
+				break;
 			case 99:
 				//exit
 				break;
@@ -217,6 +301,11 @@ public class PRSConsoleApp {
 					 "8 - Add Vendor\n"+
 					 "9 - Update Vendor\n"+
 					 "10 - Delete Vendor\n"+
+					 "11 - List Products\n"+
+					 "12 - Get Product\n"+
+					 "13 - Add Product\n"+
+					 "14 - Update Product\n"+
+					 "15 - Delete Product\n"+
 					 
 					 "99 - Exit\n"+
 					 "Command: ";
@@ -239,5 +328,14 @@ public class PRSConsoleApp {
 			e.printStackTrace();
 		}
 		return v;
+	}
+	private static Product getProduct(int id) {
+		Product p = null;
+		try {
+			p = pdb.get(id);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return p;
 	}
 }
