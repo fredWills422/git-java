@@ -1,21 +1,25 @@
 package com.maxtrain.bootcamp.prs.product;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(uniqueConstraints=@UniqueConstraint(name="UIDX_vendorId", columnNames= {"vendorId"}))
 public class Product {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	@Column(length=15, nullable=false)
 	private int vendorId;
+	@Column(length=20, nullable=false)
 	private String partNumber;
+	@Column(length=20, nullable=false)
 	private String name;
+	@Column(length=4, nullable=false)
 	private double price;
+	@Column(length=20, nullable=true)
 	private String unit;
+	@Column(length=20, nullable=true)
 	private String photoPath;
 	
 	public int getId() {

@@ -1,22 +1,29 @@
 package com.maxtrain.bootcamp.prs.vendor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 
 @Entity
+@Table(uniqueConstraints=@UniqueConstraint(name = "UIDX_code", columnNames = {"code"}))
 public class Vendor {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	@Column(length=15, nullable=false)
 	private String code;
+	@Column(length=20, nullable=false)
 	private String name;
+	@Column(length=20, nullable=false)
 	private String address;
+	@Column(length=20, nullable=false)
 	private String city;
+	@Column(length=2, nullable=false)
 	private String State;
+	@Column(length=5, nullable=false)
 	private int zip;
+	@Column(length=12, nullable=false)
 	private String phoneNumber;
+	@Column(length=27, nullable=false)
 	private String email;
 	
 	public int getId() {
