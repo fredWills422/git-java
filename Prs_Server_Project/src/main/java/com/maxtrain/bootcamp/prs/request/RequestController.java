@@ -37,7 +37,7 @@ public class RequestController {
 	}
 	
 	@GetMapping()
-	public JsonResponse getAll() {
+	public JsonResponse list() {
 		try {
 			return JsonResponse.getInstance(requestRepo.findAll());
 		}catch(Exception ex) {
@@ -58,7 +58,7 @@ public class RequestController {
 	}
 	
 	@PostMapping()
-	public JsonResponse insert(@RequestBody Request request) {
+	public JsonResponse add(@RequestBody Request request) {
 		try {
 			request.setStatus("New");
 			request.setSubmittedDate(new Date(System.currentTimeMillis()));
@@ -80,7 +80,7 @@ public class RequestController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public @ResponseBody JsonResponse delete(@PathVariable Integer id) {
+	public JsonResponse remove(@PathVariable Integer id) {
 		try {
 			Optional<Request> r = requestRepo.findById(id);
 			if(!r.isPresent()) {
@@ -101,7 +101,7 @@ public class RequestController {
 		}
 	}
 	
-	@GetMapping("/reviews/{userId}")
+	@GetMapping("/list-review/{userId}")
 	public JsonResponse getRequestWithStatusOfReview(@PathVariable Integer userId) {
 		try {
 			if(userId==null) {
@@ -115,7 +115,7 @@ public class RequestController {
 		}
 	}
 	
-	@PutMapping("/review/{id}")
+	@PutMapping("/submit-review/{id}")
 	public JsonResponse reveiw(@RequestBody Request request, @PathVariable Integer id) {
 		try {
 			if(id!= request.getId()) {

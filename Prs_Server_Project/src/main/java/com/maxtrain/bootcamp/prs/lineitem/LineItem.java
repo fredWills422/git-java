@@ -22,19 +22,18 @@ public class LineItem {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	@ManyToOne(optional=false)
-	@JoinColumn(name="RequestId", nullable = false)
+	@JoinColumn(name="requestId", nullable = false)
 	private Request request;
 	@ManyToOne(optional=false)
 	@JoinColumn(name="ProductId", nullable = false)
 	private Product product;
-	@Column
+	@Column(nullable=false)
 	private int quantity;
 	
 	public LineItem() {}
 
-	public LineItem(int id, Request request, Product product, int quantity) {
+	public LineItem(Request request, Product product, int quantity) {
 		super();
-		this.id = id;
 		this.request = request;
 		this.product = product;
 		this.quantity = quantity;

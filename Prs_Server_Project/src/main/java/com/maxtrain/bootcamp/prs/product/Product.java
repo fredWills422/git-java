@@ -5,7 +5,7 @@ import javax.persistence.*;
 import com.maxtrain.bootcamp.prs.vendor.Vendor;
 
 @Entity
-@Table(uniqueConstraints=@UniqueConstraint(name="UIDX_partNumber", columnNames= {"partNumber"}))
+//@Table(uniqueConstraints=@UniqueConstraint(name="UIDX_partNumber", columnNames= {"partNumber"}))
 public class Product {
 
 	@Id
@@ -13,11 +13,11 @@ public class Product {
 	private int id;
 	@Column(length=50, nullable=false)
 	private String partNumber;
-	@Column(length=80, nullable=false)
+	@Column(length=150, nullable=false)
 	private String name;
 	@Column(columnDefinition="decimal(10,2) NOT NULL DEFAULT 0.0")
 	private double price;
-	@Column(length=10, nullable=false)
+	@Column(length=255, nullable=false)
 	private String unit;
 	@Column(length=255, nullable=true)
 	private String photoPath;

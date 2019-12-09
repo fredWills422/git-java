@@ -3,7 +3,6 @@ package com.maxtrain.bootcamp.prs.user;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.maxtrain.bootcamp.prs.util.JsonResponse;
 
 @CrossOrigin
-@Controller
+@RestController
 @RequestMapping(path="/users")
 
 public class UserController {
@@ -25,49 +24,59 @@ public class UserController {
 	@Autowired
 	private UserRepository userRepo;
 	
-	//sence the parenthesis is empty nothing after users is needed
-	//http methods POST(add) PUT(update) DELETE(delete) GET leads to getMapping
-	
 	private JsonResponse save (User user) {
 		try {
 			User u = userRepo.save(user);
 			return JsonResponse.getInstance(u);
+		}catch(IllegalArgumentException ex) {
+			return JsonResponse.getInstance("Parameter user cannot be null");
 		}catch (Exception ex){
 			return JsonResponse.getInstance(ex.getMessage());
 		}
 	}
 	
 	@GetMapping()
-	public @ResponseBody JsonResponse getAll() {
-		Iterable<User> users = userRepo.findAll();
-		return JsonResponse.getInstance(users);
+	public JsonResponse list() {
+		try {
+			Iterable<User> users = userRepo.findAll();
+			return JsonResponse.getInstance(users);
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex.getMessage());
+		}
 	}
 	
 	@GetMapping("/{id}")
-	public @ResponseBody JsonResponse getByPK(@PathVariable Integer id) {
+	public JsonResponse getByPK(@PathVariable Integer id) {
 		try {
 			Optional<User> u = userRepo.findById(id);
 			if(!u.isPresent()) {
 				return JsonResponse.getInstance("User not found");
-			}
-			return JsonResponse.getInstance(u.get());
+			}return JsonResponse.getInstance(u.get());
 		}catch (Exception ex) {
 			return JsonResponse.getInstance(ex.getMessage());
 		}
 	}
 	
 	@PostMapping()
-	public @ResponseBody JsonResponse insert(@RequestBody User user) {
-		return save(user);
+	public JsonResponse add(@RequestBody User user) {
+		try {			
+			return save(user);
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex.getMessage());
+		}
 	}
 	
 	@PutMapping("/{id}")
-	public @ResponseBody JsonResponse update(@RequestBody User user, @PathVariable Integer id) {
-		return save(user);
+	public JsonResponse update(@RequestBody User user, @PathVariable Integer id) {
+		try {
+			return save(user);
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex.getMessage());
+		}
 	}
 	
 	@DeleteMapping("/{id}")
-	public @ResponseBody JsonResponse delete(@PathVariable Integer id) {
+	public JsonResponse remove(@PathVariable Integer id) {
 		try {
 			Optional<User> u = userRepo.findById(id);
 			if(!u.isPresent()) {
@@ -75,13 +84,15 @@ public class UserController {
 			}
 			userRepo.deleteById(id);
 			return JsonResponse.getInstance(u.get());
+		}catch(IllegalArgumentException ex) {
+			return JsonResponse.getInstance("Parameter id cannot be null");
 		}catch(Exception ex) {
 			return JsonResponse.getInstance(ex.getMessage());
 		}
 	}
 	
-	@GetMapping("/authenticate")
-	public @ResponseBody JsonResponse authenticate(@RequestBody User user) {
+	@PostMapping("/login")
+	public JsonResponse authenticate(@RequestBody User user) {
 		String userName= user.getUserName();
 		String password = user.getPassword();
 		try {

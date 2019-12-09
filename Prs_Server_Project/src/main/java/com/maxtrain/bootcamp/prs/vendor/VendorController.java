@@ -3,7 +3,6 @@ package com.maxtrain.bootcamp.prs.vendor;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.maxtrain.bootcamp.prs.util.JsonResponse;
 
 @CrossOrigin
-@Controller
+@RestController
 @RequestMapping(path="/vendors")
 public class VendorController {
 	
@@ -28,18 +27,24 @@ public class VendorController {
 		try {
 			Vendor v = vendorRepo.save(vendor);
 			return JsonResponse.getInstance(v);
+		}catch(IllegalArgumentException ex) {
+			return JsonResponse.getInstance("Parameter vendor cannot be null");
 		}catch(Exception ex) {
 			return JsonResponse.getInstance(ex.getMessage());
 		}
 	}
 	
 	@GetMapping()
-	public @ResponseBody JsonResponse getAll() {
-		return JsonResponse.getInstance(vendorRepo.findAll());
+	public JsonResponse list() {
+		try {			
+			return JsonResponse.getInstance(vendorRepo.findAll());
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex.getMessage());
+		}
 	}
 	
 	@GetMapping("/{id}")
-	public @ResponseBody JsonResponse getByPK(@PathVariable Integer id) {
+	public JsonResponse getByPK(@PathVariable Integer id) {
 		try {
 			Optional<Vendor> v= vendorRepo.findById(id);
 			if(!v.isPresent()) {
@@ -53,17 +58,25 @@ public class VendorController {
 	
 	
 	@PostMapping()
-	public @ResponseBody JsonResponse insert(@RequestBody Vendor vendor) {
-		return save(vendor);
+	public JsonResponse add(@RequestBody Vendor vendor) {
+		try {
+			return save(vendor);
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex.getMessage());
+		}
 	}
 	
 	@PutMapping("/{id}")
-	public @ResponseBody JsonResponse update(@RequestBody Vendor vendor, @PathVariable Integer id) {
-		return save(vendor);
+	public JsonResponse update(@RequestBody Vendor vendor, @PathVariable Integer id) {
+		try{
+			return save(vendor);
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex.getMessage());
+		}	
 	}
 	
 	@DeleteMapping("/{id}")
-	public @ResponseBody JsonResponse delete(@PathVariable Integer id) {
+	public JsonResponse remove(@PathVariable Integer id) {
 		try {
 			Optional<Vendor> v = vendorRepo.findById(id);
 			if(!v.isPresent()) {
@@ -75,21 +88,6 @@ public class VendorController {
 			return JsonResponse.getInstance(ex.getMessage());
 		}
 		
-	}
-	
-	@GetMapping("/authenticate")
-	public @ResponseBody JsonResponse authenticate (@RequestBody Vendor vendor) {
-		Integer id = vendor.getId();
-		String code = vendor.getCode();
-		try {
-			Vendor v = vendorRepo.findByIdAndCode(id, code);
-			if(v==null) {
-				return JsonResponse.getInstance("Vendor not found");
-			}
-			return JsonResponse.getInstance(v);
-		}catch(Exception ex) {
-			return JsonResponse.getInstance(ex.getMessage());
-		}
 	}
 	
 }

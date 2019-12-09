@@ -1,5 +1,6 @@
 package com.maxtrain.bootcamp.prs.lineitem;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,16 @@ import com.maxtrain.bootcamp.prs.util.JsonResponse;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/lineItems")
+@RequestMapping("/line-items")
 public class LineItemController {
 
 	@Autowired
 	private LineItemRepository lineItemRepo;
 	@Autowired
 	private RequestRepository requestRepo;
-	
+	//=============================================================================
+	//grabbing all the line items with the passed in request id and adding the total
+	//=============================================================================
 	private void recalculateTotal(int requestId) throws Exception{
 		Optional<Request> r = requestRepo.findById(requestId);
 		if(!r.isPresent()) {
@@ -35,7 +38,7 @@ public class LineItemController {
 		}
 		Request request = r.get();
 		double total = 0;
-		Iterable<LineItem> lines = lineItemRepo.getLineItemByRequestId(requestId);
+		Iterable<LineItem> lines = lineItemRepo.findLineItemByRequestId(requestId); 
 		for(LineItem line: lines) {
 			total += line.getQuantity() * line.getProduct().getPrice();
 			request.setTotal(total);
@@ -49,14 +52,14 @@ public class LineItemController {
 			LineItem l = lineItemRepo.save(lineItem);
 			return JsonResponse.getInstance(l);
 		}catch(IllegalArgumentException ex) {
-			return JsonResponse.getInstance("Parameter can't be null");
+			return JsonResponse.getInstance("Parameter lineItem can't be null");
 		}catch(Exception ex) {
 			return JsonResponse.getInstance(ex.getMessage());
 		}
 	}
 	
 	@GetMapping("/")
-	public JsonResponse getAll() {
+	public JsonResponse list() {
 		try {
 			return JsonResponse.getInstance(lineItemRepo.findAll());
 		}catch(Exception ex) {
@@ -77,7 +80,7 @@ public class LineItemController {
 	}
 	
 	@PostMapping()
-	public JsonResponse insert(@RequestBody LineItem lineItem) {
+	public JsonResponse add(@RequestBody LineItem lineItem) {
 		try {
 			JsonResponse jr = save(lineItem);
 			recalculateTotal(lineItem.getRequest().getId());
@@ -102,7 +105,7 @@ public class LineItemController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public JsonResponse delete(@PathVariable Integer id) {
+	public JsonResponse remove(@PathVariable Integer id) {
 		try {
 			Optional<LineItem> l = lineItemRepo.findById(id);
 			if(!l.isPresent()) {
@@ -115,5 +118,50 @@ public class LineItemController {
 			return JsonResponse.getInstance(ex.getMessage());
 		}
 	}
+	//get all lineitems by requestId
+/*	@GetMapping("/lines-for-pr/{id}")
+	public JsonResponse linesForRequest(@PathVariable Integer requestId) throws Exception{
+		try {
+			Optional<Request> r = requestRepo.findById(requestId);
+			if(!r.isPresent()){
+				throw new Exception("The requestId " +requestId+ " was not found");
+			}
+			Request request=r.get();
+			List<LineItem> listOfLineItemsWithRequestId = new ArrayList<>();
+			Iterable<LineItem> lines= lineItemRepo.getLineItemByRequestId(requestId);
+			for(LineItem l: lines) {
+				listOfLineItemsWithRequestId.add(l);
+				requestRepo.save(request);
+			}
+			lineItemRepo.saveAll(listOfLineItemsWithRequestId);
+			return JsonResponse.getInstance(listOfLineItemsWithRequestId);
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex.getMessage());
+		}
+		
+	}*/
+	@GetMapping("/lines-for-pr/{requestId}")
+	public JsonResponse linesForRequest(@PathVariable Integer requestId) throws Exception{
+		try {
+			List<LineItem> linesWithRequestId = lineItemRepo.findAllLineItemsByRequestId(requestId);
+			return JsonResponse.getInstance(linesWithRequestId);
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex.getMessage());
+		}
+		
+	}
+	
+	/*@GetMapping("/lines-for-pr/{id}")
+	public JsonResponse linesForRequest(@PathVariable Integer requestId) {
+		try {
+			if(requestId==null) {
+				return JsonResponse.getInstance("Request Id parameter can't be null");
+			}
+			Iterable<LineItem>lines = lineItemRepo.getLineItemByRequestId(requestId);
+			return JsonResponse.getInstance(lines);
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex);
+		}
+	}*/
 	
 }

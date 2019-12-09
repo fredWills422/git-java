@@ -1,12 +1,14 @@
 package com.maxtrain.bootcamp.prs.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class JsonResponse {
 
 	private Object data = null;
 	private Object errors = null;
 	private Object meta = null;
+
 
 	// Good response - single or multiple resource(s)
 	public JsonResponse(Object d) {
@@ -50,6 +52,9 @@ public class JsonResponse {
 
 	public static JsonResponse getInstance(Object d) {
 		return new JsonResponse(d);
+	}
+	public static JsonResponse getInstance(List<Object> objects ) {
+		return new JsonResponse(objects);
 	}
 
 	// Create an instance w/ an exception, use the message

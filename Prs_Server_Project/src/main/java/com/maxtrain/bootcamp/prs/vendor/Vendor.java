@@ -9,13 +9,13 @@ public class Vendor {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	@Column(length=15, nullable=false)
+	@Column(length=10, nullable=false)
 	private String code;
-	@Column(length=20, nullable=false)
+	@Column(length=255, nullable=false)
 	private String name;
-	@Column(length=20, nullable=false)
+	@Column(length=255, nullable=false)
 	private String address;
-	@Column(length=20, nullable=false)
+	@Column(length=255, nullable=false)
 	private String city;
 	@Column(length=2, nullable=false)
 	private String State;
@@ -23,7 +23,7 @@ public class Vendor {
 	private int zip;
 	@Column(length=12, nullable=false)
 	private String phoneNumber;
-	@Column(length=27, nullable=false)
+	@Column(length=100, nullable=false)
 	private String email;
 	
 	public int getId() {

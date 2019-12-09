@@ -3,7 +3,6 @@ package com.maxtrain.bootcamp.prs.product;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.maxtrain.bootcamp.prs.util.JsonResponse;
 
 @CrossOrigin
-@Controller
+@RestController
 @RequestMapping(path="/products")
 public class ProductController {
 
@@ -35,12 +34,16 @@ public class ProductController {
 	}
 	
 	@GetMapping()
-	public @ResponseBody JsonResponse getAll() {
-		return JsonResponse.getInstance(productRepo.findAll());
+	public JsonResponse list() {
+		try {
+			return JsonResponse.getInstance(productRepo.findAll());
+		}catch(Exception ex) {
+			return JsonResponse.getInstance(ex.getMessage());
+		}
 	}
 	
 	@GetMapping("/{id}")
-	public @ResponseBody JsonResponse getByPk(@PathVariable Integer id) {
+	public JsonResponse getByPk(@PathVariable Integer id) {
 		try {
 			if(id ==null) return JsonResponse.getInstance("Parameter id cannot be null");
 			Optional<Product> p = productRepo.findById(id);
@@ -53,7 +56,7 @@ public class ProductController {
 	}
 	
 	@PostMapping
-	public @ResponseBody JsonResponse insert(@RequestBody Product product) {
+	public JsonResponse add(@RequestBody Product product) {
 		try {
 			return save(product);
 		}catch(Exception ex) {
@@ -62,7 +65,7 @@ public class ProductController {
 	}
 	
 	@PutMapping("/{id}")
-	public @ResponseBody JsonResponse update(@RequestBody Product product, @PathVariable Integer id) {
+	public JsonResponse update(@RequestBody Product product, @PathVariable Integer id) {
 		try {
 			if(id != product.getId()) {
 				return JsonResponse.getInstance("Parameter id doesn't match");
@@ -74,7 +77,7 @@ public class ProductController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public @ResponseBody JsonResponse delete(@PathVariable Integer id) {
+	public JsonResponse remove(@PathVariable Integer id) {
 		try {
 			if(id==null) return JsonResponse.getInstance("Parameter id can't be null");
 			Optional<Product> p = productRepo.findById(id);
@@ -87,19 +90,5 @@ public class ProductController {
 			return JsonResponse.getInstance(ex.getMessage());
 		}
 	}
-	
-//	@GetMapping("/authenticate")
-//	public @ResponseBody JsonResponse authenticate(@RequestBody Product product) {
-//		Integer id = product.getId();
-//		Integer vendorId = product.getVendorId();
-//		try {
-//			Product p = productRepo.findByIdAndVendorId(id, vendorId);
-//			if(p==null) {
-//				return JsonResponse.getInstance("Product not found");
-//			}return JsonResponse.getInstance(p);
-//		}catch (Exception ex) {
-//			return JsonResponse.getInstance(ex.getMessage());
-//		}
-//	}
 	
 }

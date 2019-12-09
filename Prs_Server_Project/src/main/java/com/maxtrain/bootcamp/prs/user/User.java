@@ -9,22 +9,38 @@ public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	@Column(length=20, nullable=false)
+	@Column(length=20, name="userName", nullable=false)
 	private String userName;
-	@Column(length=10, nullable=false)
+	@Column(length=10, name="Password", nullable=false)
 	private String password;
-	@Column(length=20, nullable=false)
+	@Column(length=20, name="firstName", nullable=false)
 	private String firstName;
-	@Column(length=20, nullable=false)
+	@Column(length=20, name="lastName", nullable=false)
 	private String lastName;
 	@Column(length=12, nullable=false)
 	private String phone;
 	@Column(length=75, nullable=false)
 	private String email;
+	@Column(nullable=false)
 	private boolean isReviewer;
+	@Column(nullable=false)
 	private boolean isAdmin;
 	//@Column(name = "isActive")
 	//private boolean active;
+	public User() {}
+	public User(String userName, String password, String firstName, String lastName, String phone, String email,
+			boolean isReviewer, boolean isAdmin) {
+		super();
+		
+		this.userName = userName;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phone = phone;
+		this.email = email;
+		this.isReviewer = isReviewer;
+		this.isAdmin = isAdmin;
+	}
 	public int getId() {
 		return id;
 	}
@@ -85,6 +101,6 @@ public class User {
 	//public void setActive(boolean active) {
 	//	this.active = active;
 	//}
-	public User() {}
+	
 	
 }

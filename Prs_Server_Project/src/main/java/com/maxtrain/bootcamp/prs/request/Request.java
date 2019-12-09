@@ -3,8 +3,6 @@ package com.maxtrain.bootcamp.prs.request;
 
 import java.sql.Date;
 
-
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,21 +19,21 @@ public class Request {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	@Column(length=80, nullable=false)
+	@Column(length=100, nullable=false)
 	private String description;
-	@Column(length=80, nullable=false)
+	@Column(length=255, nullable=false)
 	private String justification;
-	@Column(length=80, nullable=false)
+	@Column(nullable=false)
 	private Date dateNeeded;
-	@Column(length=80, nullable=false)
+	@Column(length=25, nullable=false)
 	private String deliveryMode;
-	@Column(length=80, nullable=false)
+	@Column(length=20, nullable=false)
 	private String status;
-	@Column(length=10, nullable=false)
+	@Column(columnDefinition="DECIMAL 10,2 NOT NULL")
 	private double total;
-	@Column(length=80, nullable=false)
+	@Column(length=10, nullable=false)
 	private Date submittedDate;
-	@Column(length=80, nullable=true)
+	@Column(length=100, nullable=true)
 	private String reasonForRejection;
 	@ManyToOne(optional = false)
 	@JoinColumn(name="userId")
